@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.css";
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="App" data-testid="app-test">
       <Router>
         <Header />
         <Switch>

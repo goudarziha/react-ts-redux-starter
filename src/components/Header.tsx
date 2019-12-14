@@ -62,7 +62,10 @@ const Header = () => {
   );
 
   return (
-    <nav className="navbar navbar-expand-md sticky-top bg-light">
+    <nav
+      className="navbar navbar-expand-md sticky-top bg-light"
+      data-testid="header-test"
+    >
       <Link
         to="/"
         className="navbar-brand font-weight-bold text-monospace"

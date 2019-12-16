@@ -1,16 +1,36 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
-import authDuck from "../ducks/authDuck";
+import * as _ from "lodash";
+import { Redirect } from "react-router-dom";
+import { useDispatch, connect, useSelector, shallowEqual } from "react-redux";
+import { login, Auth } from "../ducks/authDuck";
 import { Link } from "react-router-dom";
 import useForm from "react-hook-form";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector(
+    state => ({
+      isAuthenticated: _.get(state, ["auth", "isAuthenticated"])
+    }),
+    shallowEqual
+  );
+  console.log(isAuthenticated);
+  const [stateValues, setStateValues] = React.useState({
+    email: undefined,
+    password: undefined
+  });
   const { handleSubmit, register, errors, formState } = useForm({
     mode: "onChange"
   });
   const onSubmit = (data: any) => {
     console.log(data);
+    dispatch(login(data.email, data.password));
   };
+
+  if (isAuthenticated) {
+    return <Redirect to="/register" />;
+  }
+
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -63,4 +83,6 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapStateToProps = ({}) => ({});
+
+export default connect(mapStateToProps, { login })(Login);

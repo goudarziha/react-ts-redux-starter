@@ -1,59 +1,118 @@
 import { AnyAction } from "redux";
-import { useSelector, useDispatch } from "react-redux";
+import * as _ from 'lodash';
+import { produce } from 'immer';
 import axios, { AxiosResponse } from "axios";
+import { ActionStatus } from './utils/types';
+import { Dispatch } from 'redux';
 import { ThunkAction } from "redux-thunk";
-import { createPostRequest } from "../utils/requests";
 
 export const NAMESPACE = "auth";
 
-export const Action = {
-  LOGIN: `${NAMESPACE}/LOGIN`,
-  LOGOUT: `${NAMESPACE}/LOGOUT`,
-  CHECK_TOKEN: `${NAMESPACE}/CHECK_TOKEN`,
-  REGISTER: `${NAMESPACE}/REGISTER`
-};
 
-export interface Auth {
-  access_token: string;
-  refresh_token: string;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  user: string;
-}
+export const BASE_URL = "https://reqres.in";
 
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 export const CHECK_TOKEN = "CHECK_TOKEN";
 export const REGISTER = "REGISTER";
 
+export const Action = {
+  LOGIN: `${NAMESPACE}/${LOGIN}`,
+  LOGOUT: `${NAMESPACE}/${LOGOUT}`,
+  CHECK_TOKEN: `${NAMESPACE}/${CHECK_TOKEN}`,
+  REGISTER: `${NAMESPACE}/${REGISTER}`
+};
+
+export interface Auth {
+  access_token: string;
+  refresh_token: string;
+  isAuthenticated: boolean;
+  user: string;
+}
+
 export interface LoginAction {
   type: typeof LOGIN;
   payload: any;
 }
 
-export type AuthActionTypes = LoginAction;
+export interface RegisterAction {
+  type: typeof REGISTER;
+  payload: any;
+}
+
+export type AuthActionTypes = LoginAction | RegisterAction;
 
 export type AppActions = AuthActionTypes;
 
-export const login = (email: string, password: string): LoginAction => {
-  const dispatch = useDispatch();
-  createPostRequest(
-    LOGIN,
-    "http://localhost:3000/api/v1/login",
-    { email, password },
-    null,
-    dispatch
-  );
-  return {
-    type: LOGIN,
-    payload: ""
-  };
+export const login = (email: string, password: string) => (dispatch: Dispatch<any>) => {
+  const actionType = Action.LOGIN;
+  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+  axios.post(BASE_URL + '/api/login', { email, password }).then(res => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    if (res.status === 200) {
+
+      if (res.data) {
+        dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
+      }
+    }
+  }).catch(err => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+  })
 };
 
-const authReducerDefaultState: Auth = {
-  access_token: "",
-  refresh_token: "",
-  isLoading: false,
+export const register = (email: string, password: string) => (dispatch: Dispatch<any>) => {
+  const actionType = Action.REGISTER;
+  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+  axios.post(BASE_URL + '/api/register', { email, password }).then(res => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    if (res.status === 200) {
+      if (res.data) {
+        dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
+      }
+    }
+  }).catch(err => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+  })
+}
+
+export const logout = () => (dispatch: Dispatch<any>) => {
+  const actionType = Action.LOGOUT;
+
+  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+
+  axios.post(BASE_URL + '/api/login', {}).then(res => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    if (res.status === 200 && res.data) {
+      dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data });
+    }
+  }).catch(err => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+  })
+}
+
+export const checkToken = () => (dispatch: Dispatch<any>) => {
+  const actionType = Action.CHECK_TOKEN;
+  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+  axios.get(BASE_URL + "/api/login").then(res => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    if (res.status === 200 && res.data) {
+      dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
+    }
+  }).catch(err => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+  })
+}
+
+
+const authReducerDefaultState = {
+  status: {
+    [Action.LOGIN]: ActionStatus.IDLE,
+    [Action.REGISTER]: ActionStatus.IDLE,
+    [Action.CHECK_TOKEN]: ActionStatus.IDLE,
+    [Action.LOGOUT]: ActionStatus.IDLE
+  },
+  access_token: localStorage.getItem('access_token'),
+  refresh_token: localStorage.getItem('refresh_token'),
   isAuthenticated: false,
   user: ""
 };
@@ -61,10 +120,37 @@ const authReducerDefaultState: Auth = {
 const authReducer = (
   state = authReducerDefaultState,
   action: AnyAction
-): Auth => {
+): any => {
   switch (action.type) {
-    case LOGIN:
-      return state;
+    case Action.LOGIN:
+      return produce(state, draftState => {
+        if (action.status[Action.LOGIN] === ActionStatus.SUCCESS) {
+          localStorage.setItem('access_token', action.payload.token);
+          localStorage.setItem('refresh_token', action.payload.token);
+          _.set(draftState, ['isAuthenticated'], true);
+          _.set(draftState, ['access_token'], action.payload.token);
+          _.set(draftState, ['refresh_token'], action.payload.token);
+          _.set(draftState, ['user'], 'amir');
+        }
+      })
+    case Action.REGISTER:
+      return produce(state, drafState => {
+        if (action.status[Action.REGISTER] === ActionStatus.SUCCESS) {
+          _.set(drafState, ['isAuthenticated'], true);
+          _.set(drafState, ['access_token'], action.payload.token);
+          _.set(drafState, ['user'], action.payload.id.toString());
+        }
+      })
+    case Action.LOGOUT:
+      return produce(state, draftState => {
+        if (action.status[Action.LOGOUT] === ActionStatus.SUCCESS) {
+          localStorage.clear();
+          _.set(draftState, ['isAuthenticated'], false);
+          _.set(draftState, ['access_token'], null);
+          _.set(draftState, ['refresh_token'], null);
+          _.set(draftState, ['user'], "");
+        }
+      })
     default:
       return state;
   }

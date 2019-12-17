@@ -1,13 +1,18 @@
 import * as React from "react";
+import * as _ from 'lodash';
 import useForm from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { register as RegisterCall } from '../ducks/authDuck';
 
 const Register = () => {
+  const dispatch = useDispatch();
   const { handleSubmit, register, errors, formState } = useForm({
     mode: "onChange"
   });
 
   const onSubmit = (data: any) => {
     console.log(data);
+    dispatch(RegisterCall(data.email, data.password));
   };
   return (
     <div className="container">
@@ -67,5 +72,4 @@ const Register = () => {
     </div>
   );
 };
-
 export default Register;

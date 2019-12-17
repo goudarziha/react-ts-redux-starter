@@ -1,10 +1,16 @@
 import * as React from "react";
+import * as _ from 'lodash';
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import authDuck from "../ducks/authDuck";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from '../ducks/authDuck';
 
 const Header = () => {
-  const [isAuthenticated, setAuthenticated] = React.useState(false);
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(state => _.get(state, ['auth', 'isAuthenticated']));
+
+  const logoutUser = () => {
+    dispatch(logout());
+  }
   const guestLinks = (
     <ul className="navbar-nav ml-auto">
       <li className="nav-item">
@@ -38,7 +44,8 @@ const Header = () => {
         {"df"}
       </div>
       <li className="nav-item dropdown">
-        <a
+        <Link
+          to="/"
           className="nav-link dropdown-toggle"
           href="#"
           id="navbarDropdownMenuLink"
@@ -46,7 +53,8 @@ const Header = () => {
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-        ></a>
+        >d</Link>
+        <span className="dropdown-item" onClick={() => logoutUser()}>logout</span>
         <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <Link to="/settings" className="dropdown-item">
             Settings
@@ -55,7 +63,7 @@ const Header = () => {
           <div className="dropdown-item">Another action</div>
 
           <div className="dropdown-divider" />
-          <span className="dropdown-item">logout</span>
+          <span className="dropdown-item" onClick={() => logoutUser()}>logout</span>
         </div>
       </li>
     </ul>

@@ -14,21 +14,15 @@ const Login = () => {
     }),
     shallowEqual
   );
-  console.log(isAuthenticated);
-  const [stateValues, setStateValues] = React.useState({
-    email: undefined,
-    password: undefined
-  });
   const { handleSubmit, register, errors, formState } = useForm({
     mode: "onChange"
   });
   const onSubmit = (data: any) => {
-    console.log(data);
     dispatch(login(data.email, data.password));
   };
 
   if (isAuthenticated) {
-    return <Redirect to="/register" />;
+    return <Redirect to="/dashboard" />;
   }
 
   return (
@@ -83,6 +77,6 @@ const Login = () => {
   );
 };
 
-const mapStateToProps = ({}) => ({});
+const mapStateToProps = ({ }) => ({});
 
 export default connect(mapStateToProps, { login })(Login);

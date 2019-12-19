@@ -22,7 +22,11 @@ export const Action = {
     GET_BY_ID: `${NAMESPACE}/${GET_BY_ID}`,
 }
 
-const userReducerDefaultState = {
+export type Slice = {
+    user: string | undefined;
+}
+
+export const initialState = {
     status: {
         [Action.GET]: ActionStatus.IDLE,
         [Action.GET_BY_ID]: ActionStatus.IDLE,
@@ -30,7 +34,7 @@ const userReducerDefaultState = {
     user: ""
 };
 
-const userReducer = (state = userReducerDefaultState, action: AnyAction): any => {
+export const reducer = (state = initialState, action: AnyAction): any => {
     switch (action.type) {
         case Action.GET:
             return state;
@@ -41,4 +45,4 @@ const userReducer = (state = userReducerDefaultState, action: AnyAction): any =>
     }
 }
 
-export default userReducer
+export default reducer;

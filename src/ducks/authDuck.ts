@@ -2,25 +2,21 @@ import { AnyAction } from "redux";
 import * as _ from 'lodash';
 import { produce } from 'immer';
 import axios, { AxiosResponse } from "axios";
-import { ActionStatus } from './utils/types';
+import { ActionStatus, ThunkResult } from './utils/types';
 import { Dispatch } from 'redux';
 import { ThunkAction } from "redux-thunk";
-
+import { beginAsyncRequest, handleAsyncResponse } from "./utils/asyncActions";
+import { act } from "react-dom/test-utils";
 export const NAMESPACE = "auth";
 
 
 export const BASE_URL = "https://reqres.in";
 
-export const LOGIN = "LOGIN";
-export const LOGOUT = "LOGOUT";
-export const CHECK_TOKEN = "CHECK_TOKEN";
-export const REGISTER = "REGISTER";
-
 export const Action = {
-  LOGIN: `${NAMESPACE}/${LOGIN}`,
-  LOGOUT: `${NAMESPACE}/${LOGOUT}`,
-  CHECK_TOKEN: `${NAMESPACE}/${CHECK_TOKEN}`,
-  REGISTER: `${NAMESPACE}/${REGISTER}`
+  LOGIN: `${NAMESPACE}/LOGIN`,
+  LOGOUT: `${NAMESPACE}/LOGOUT`,
+  CHECK_TOKEN: `${NAMESPACE}/CHECK_TOKEN`,
+  REGISTER: `${NAMESPACE}/REGISTER`
 };
 
 export interface Auth {
@@ -30,36 +26,28 @@ export interface Auth {
   user: string;
 }
 
-export interface LoginAction {
-  type: typeof LOGIN;
-  payload: any;
-}
-
-export interface RegisterAction {
-  type: typeof REGISTER;
-  payload: any;
-}
-
-export type AuthActionTypes = LoginAction | RegisterAction;
-
-export type AppActions = AuthActionTypes;
-
-export const login = (email: string, password: string) => (dispatch: Dispatch<any>) => {
+export const login = (email: string, password: string): ThunkResult<Promise<any>> => {
   const actionType = Action.LOGIN;
-  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
-  axios.post(BASE_URL + '/api/login', { email, password }).then(res => {
-    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
-    if (res.status === 200) {
+  let meta = {};
+  return async (dispatch, getState, extraArgument) => {
+    meta = await beginAsyncRequest(dispatch, actionType, meta);
+    const request = await axios.post(BASE_URL + '/api/login', { email, password });
+    handleAsyncResponse(dispatch, actionType, request, meta);
 
-      if (res.data) {
-        dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
-      }
-    }
-  }).catch(err => {
-    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
-  })
+    // dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+    // axios.post(BASE_URL + '/api/login', { email, password }).then(res => {
+    //   dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    //   if (res.status === 200) {
+
+    //     if (res.data) {
+    //       dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
+    //     }
+    //   }
+    // }).catch(err => {
+    //   dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+    // })
+  };
 };
-
 export const register = (email: string, password: string) => (dispatch: Dispatch<any>) => {
   const actionType = Action.REGISTER;
   dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
@@ -103,8 +91,14 @@ export const checkToken = () => (dispatch: Dispatch<any>) => {
   })
 }
 
+export type Slice = {
+  access_token: string | undefined;
+  refresh_token: string | undefined;
+  isAuthenticated: boolean;
+  user: string;
+}
 
-const authReducerDefaultState = {
+export const authReducerDefaultState = {
   status: {
     [Action.LOGIN]: ActionStatus.IDLE,
     [Action.REGISTER]: ActionStatus.IDLE,
@@ -117,7 +111,7 @@ const authReducerDefaultState = {
   user: ""
 };
 
-const authReducer = (
+export const reducer = (
   state = authReducerDefaultState,
   action: AnyAction
 ): any => {
@@ -156,4 +150,4 @@ const authReducer = (
   }
 };
 
-export default authReducer;
+export default reducer;

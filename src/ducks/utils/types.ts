@@ -19,3 +19,28 @@ export interface AsyncAction {
 }
 
 export type ThunkResult<R> = ThunkAction<R, State, undefined, AnyAction>;
+
+export enum HttpMethod {
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE'
+}
+
+export interface Config {
+    BASE_API_URL: string;
+    TIMEOUT: number;
+    token?: string;
+}
+
+export interface Request<Q> {
+    path: String;
+    method: HttpMethod;
+    token?: string;
+    data?: Q;
+}
+
+export interface Response<R> {
+    pending: Promise<R>;
+    cancel: () => void;
+}

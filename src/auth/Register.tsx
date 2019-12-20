@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as _ from 'lodash';
+import { Redirect } from 'react-router-dom';
 import useForm from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { register as RegisterCall } from '../ducks/authDuck';
 
 const Register = () => {
@@ -10,9 +11,18 @@ const Register = () => {
     mode: "onChange"
   });
 
+  const { isAuthenticated } = useSelector(
+    state => ({
+      isAuthenticated: _.get(state, ["auth", "isAuthenticated"])
+    }),
+    shallowEqual
+  );
+
+  if (isAuthenticated) {
+    return <Redirect to="/dashboard" />
+  }
   const onSubmit = (data: any) => {
-    console.log(data);
-    dispatch(RegisterCall(data.email, data.password));
+    dispatch(RegisterCall(data.username, data.email, data.password));
   };
   return (
     <div className="container">

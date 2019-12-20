@@ -4,12 +4,15 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import { Login, Register } from "./auth";
 import { Dashboard } from './pages';
 import { Header, Footer } from "./components";
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import "bootstrap/dist/css/bootstrap.css";
+import { checkToken } from './ducks/authDuck';
 
 const App: React.FC = () => {
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => _.get(state, ['auth', 'isAuthenticated']))
 
+  dispatch(checkToken());
 
   return (
     <div className="App" data-testid="app-test">

@@ -1,5 +1,8 @@
 import axios, { AxiosResponse } from 'axios'
 import * as _ from 'lodash'
+import { Dispatch } from 'redux';
+import { Request, Response, ActionStatus } from './types';
+import { async } from 'q';
 
 export interface RequestType {
     GET: "GET",
@@ -8,66 +11,38 @@ export interface RequestType {
     DELETE: "DELETE"
 }
 
-class Request {
-    config: any;
+const BASE_API_URL = "http://localhost:5000";
+const TIMEOUT = 10000000;
 
-    constructor(config: any) {
-        this.config = config;
-    }
-    public executeRequest = async <Q, R>(): Promise<any> => {
-        const cancelSource = axios.CancelToken.source();
-        const url = `${this.config.BASE_API_URL}/${sdkRequest.path}`;
-        // console.warn({ url, token: this._config.token });
-        const pendingAxios = axios
-            .request({
-                url,
-                method: sdkRequest.method,
-                headers: {
-                    Authorization: this.config.token,
-                    'Content-Type': 'application/json'
-                },
-                data: _.get(sdkRequest, 'data', null),
-                cancelToken: cancelSource.token,
-                timeout: this.config.TIMEOUT
-            })
-            .catch(error => {
-                const errCode = _.get(error, 'code');
-                const errStatus = _.get(error, ['response', 'status']);
-                const errMessage = _.get(error, 'message');
-                if (axios.isCancel(error)) {
-                    throw new Error(ApiError.CANCEL);
-                } else {
-                    if (errStatus === 401) {
-                        throw new Error(ApiError.AUTH);
-                    } else {
-                        if (errStatus === 408 || errCode === 'ECONNABORTED') {
-                            throw new Error(ApiError.TIMEOUT);
-                        } else {
-                            throw new Error(errMessage);
-                        }
-                    }
-                }
-            });
+// export const executeRequest = async<Q, R>(request: Request<Q>) => {
+//     const url = `${BASE_API_URL}/${request.path}`;
+//     const buildRequest = axios.request({
+//         url,
+//         method: request.method,
+//         headers: {
+//             'Authorization': `Bearer ${request.token}`,
+//             'Content-Type': 'application/json'
+//         },
+//         data: _.get(request, 'data', null),
+//         timeout: TIMEOUT
+//     }).catch(error => {
 
-        const cancel = () => {
-            cancelSource.cancel(ApiError.CANCEL);
-        };
-        // a bit ugly, but necessarily so to allow return of:
-        // pending:  a promise which resolves to RizeSDK de-serialized class
-        // cancel:  function to cancel the request
-        const pending = new Promise((resolve: (response: R) => void, reject) => {
-            return pendingAxios
-                .then((apiResponse: AxiosResponse<R>) => {
-                    resolve(apiResponse.data);
-                }, reject)
-                .catch(reject);
-        });
+//     })
+// }
+export const createRequest = () => {
 
-        return {
-            pending,
-            cancel
-        };
-    };
 }
-    
+
+export const executeRequest = (actionType: string, request: Request<any>) => (dispatch: Dispatch) => {
+    const url = `${BASE_API_URL}/${request.path}`;
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    return axios.request({ url, method: request.method, headers: { 'Authorization': `Bearer ${request.token}`, 'Content-Type': 'application/json' }, data: request.data, timeout: TIMEOUT }).then(response => {
+        dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+        if (response.status === 200 && response.data) {
+            dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: response.data })
+        }
+    }).catch(error => {
+        dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE }, payload: error })
+    })
 }
+

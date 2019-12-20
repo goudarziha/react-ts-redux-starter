@@ -1,16 +1,20 @@
 import { AnyAction } from "redux";
 import * as _ from 'lodash';
 import { produce } from 'immer';
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { ActionStatus, ThunkResult } from './utils/types';
 import { Dispatch } from 'redux';
-import { ThunkAction } from "redux-thunk";
-import { beginAsyncRequest, handleAsyncResponse } from "./utils/asyncActions";
+import { Response, HttpMethod } from './utils/types';
+import { executeRequest } from './utils/request';
+import { beginAsyncRequest, handleAsyncResponse, updateAsyncStatus } from "./utils/asyncActions";
 import { act } from "react-dom/test-utils";
+import { useSelector } from "react-redux";
+import { async } from "q";
+
 export const NAMESPACE = "auth";
 
 
-export const BASE_URL = "https://reqres.in";
+export const BASE_URL = "http://localhost:5000/api";
 
 export const Action = {
   LOGIN: `${NAMESPACE}/LOGIN`,
@@ -23,42 +27,49 @@ export interface Auth {
   access_token: string;
   refresh_token: string;
   isAuthenticated: boolean;
-  user: string;
+  user: any;
 }
 
-export const login = (email: string, password: string): ThunkResult<Promise<any>> => {
+const sanitize = (unsanitary: string) => {
+  const cleanStr = unsanitary.toString().replace(/\\/g, "");
+  return cleanStr
+}
+
+export const login = (email: string, password: string) => (dispatch: Dispatch<any>) => {
   const actionType = Action.LOGIN;
-  let meta = {};
-  return async (dispatch, getState, extraArgument) => {
-    meta = await beginAsyncRequest(dispatch, actionType, meta);
-    const request = await axios.post(BASE_URL + '/api/login', { email, password });
-    handleAsyncResponse(dispatch, actionType, request, meta);
 
-    // dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
-    // axios.post(BASE_URL + '/api/login', { email, password }).then(res => {
-    //   dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
-    //   if (res.status === 200) {
+  dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+  axios.post(BASE_URL + '/auth/login', { email, password }).then(res => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } });
 
-    //     if (res.data) {
-    //       dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
-    //     }
-    //   }
-    // }).catch(err => {
-    //   dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
-    // })
-  };
-};
-export const register = (email: string, password: string) => (dispatch: Dispatch<any>) => {
-  const actionType = Action.REGISTER;
-  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
-  axios.post(BASE_URL + '/api/register', { email, password }).then(res => {
-    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    console.log(res.status)
     if (res.status === 200) {
+      console.log('sdfsd')
       if (res.data) {
+        console.log(res.data);
         dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
       }
     }
   }).catch(err => {
+
+    console.log(err)
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+  })
+
+};
+export const register = (username: string, email: string, password: string) => (dispatch: Dispatch<any>) => {
+  const actionType = Action.REGISTER;
+  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+  axios.post(BASE_URL + '/auth/register', { username, email, password }).then(res => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
+    if (res.status === 200) {
+      if (res.data) {
+
+        dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: JSON.parse(res.data.replace(/\\/g, "")) })
+      }
+    }
+  }).catch(err => {
+    console.log()
     dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
   })
 }
@@ -68,7 +79,7 @@ export const logout = () => (dispatch: Dispatch<any>) => {
 
   dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
 
-  axios.post(BASE_URL + '/api/login', {}).then(res => {
+  axios.post(BASE_URL + '/api/logout', {}).then(res => {
     dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
     if (res.status === 200 && res.data) {
       dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data });
@@ -80,14 +91,18 @@ export const logout = () => (dispatch: Dispatch<any>) => {
 
 export const checkToken = () => (dispatch: Dispatch<any>) => {
   const actionType = Action.CHECK_TOKEN;
-  dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
-  axios.get(BASE_URL + "/api/login").then(res => {
-    dispatch({ type: actionType, status: { [actionType]: ActionStatus.BUSY } })
-    if (res.status === 200 && res.data) {
-      dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: res.data })
+  const token = useSelector(state => _.get(state, [NAMESPACE, 'access_token']));
+
+  const url = BASE_URL + "/auth/user";
+  const request = { path: "/auth/user", method: HttpMethod.GET, token }
+
+  return axios.request({ url, method: request.method, headers: { 'Authorization': `Bearer ${request.token}`, 'Content-Type': 'application/json' }, data: {} }).then(response => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.REQUESTED } })
+    if (response.status === 200 && response.data) {
+      dispatch({ type: actionType, status: { [actionType]: ActionStatus.SUCCESS }, payload: response.data })
     }
-  }).catch(err => {
-    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE } })
+  }).catch(error => {
+    dispatch({ type: actionType, status: { [actionType]: ActionStatus.FAILURE }, payload: error })
   })
 }
 
@@ -119,20 +134,23 @@ export const reducer = (
     case Action.LOGIN:
       return produce(state, draftState => {
         if (action.status[Action.LOGIN] === ActionStatus.SUCCESS) {
-          localStorage.setItem('access_token', action.payload.token);
-          localStorage.setItem('refresh_token', action.payload.token);
+          const access_token = _.get(action.payload, ['tokens', 'access_token']);
+          const refresh_token = _.get(action.payload, ['tokens', 'refresh_token']);
+          localStorage.setItem('access_token', access_token);
+          localStorage.setItem('refresh_token', refresh_token);
           _.set(draftState, ['isAuthenticated'], true);
-          _.set(draftState, ['access_token'], action.payload.token);
-          _.set(draftState, ['refresh_token'], action.payload.token);
-          _.set(draftState, ['user'], 'amir');
+          _.set(draftState, ['access_token'], access_token);
+          _.set(draftState, ['refresh_token'], refresh_token);
+          _.set(draftState, ['user'], _.get(action.payload, ['user']));
         }
       })
     case Action.REGISTER:
       return produce(state, drafState => {
         if (action.status[Action.REGISTER] === ActionStatus.SUCCESS) {
           _.set(drafState, ['isAuthenticated'], true);
-          _.set(drafState, ['access_token'], action.payload.token);
-          _.set(drafState, ['user'], action.payload.id.toString());
+          _.set(drafState, ['access_token'], _.get(action.payload, ['data', 'tokens', 'access_token']));
+          _.set(drafState, ['refresh_token'], action.payload.tokens.refresh_token);
+          _.set(drafState, ['user'], action.payload.user.u_id.toString());
         }
       })
     case Action.LOGOUT:
@@ -143,6 +161,13 @@ export const reducer = (
           _.set(draftState, ['access_token'], null);
           _.set(draftState, ['refresh_token'], null);
           _.set(draftState, ['user'], "");
+        }
+      })
+    case Action.CHECK_TOKEN:
+      return produce(state, draftState => {
+        if (action.status[Action.CHECK_TOKEN] === ActionStatus.SUCCESS) {
+          _.set(draftState, ['user'], _.get(action.payload, ['user']))
+          _.set(draftState, ['isAuthenticated'], true);
         }
       })
     default:

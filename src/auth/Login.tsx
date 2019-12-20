@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as _ from "lodash";
 import { Redirect } from "react-router-dom";
-import { useDispatch, connect, useSelector, shallowEqual } from "react-redux";
-import { login, Auth } from "../ducks/authDuck";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { login } from "../ducks/authDuck";
 import { Link } from "react-router-dom";
 import useForm from "react-hook-form";
 
@@ -77,6 +77,6 @@ const Login = () => {
   );
 };
 
-const mapStateToProps = ({ }) => ({});
 
-export default connect(mapStateToProps, { login })(Login);
+export default Login;
+

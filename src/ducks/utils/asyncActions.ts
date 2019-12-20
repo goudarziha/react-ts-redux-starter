@@ -15,7 +15,7 @@ const mergeMeta = <M, N>(inMeta: M, newMeta?: N): M & N & TimeStamped => {
     return _.merge(inMeta, { timestamp: Date.now().valueOf() }, newMeta);
 };
 
-export const updateAsyncStatus = <M>(dispatch: Dispatch, actionType: string, status: ActionStatus, inMeta: M, payload?: any): M & TimeStamped => {
+export const updateAsyncStatus = <M>(dispatch: Dispatch, actionType: string, status: ActionStatus, inMeta?: M, payload?: any): M & TimeStamped => {
     const meta = mergeMeta(inMeta);
     dispatch({ type: actionType, status, meta, payload });
     return meta;
@@ -37,7 +37,9 @@ export const handleAsyncResponse = async<M, R>(
     meta = await updateAsyncStatus(dispatch, actionType, ActionStatus.REQUESTED, meta);
     try {
         const response = await request.pending;
+
         const metaMessage = _.get(meta, 'message');
+        console.log(response);
         // if (!_.isNil(metaMessage)) {
         //     dispatch(commonDuck.sendMessage(metaMessage, Severity.SUCCESS, undefined, meta));
         // }

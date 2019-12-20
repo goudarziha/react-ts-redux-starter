@@ -7,9 +7,14 @@ import { ActionStatus } from './utils/types';
 export interface User {
     username: string;
     email: string;
-    first_name: string;
-    last_name: string;
-    avatar: string;
+    confirmed: boolean;
+    u_id: string;
+    created: string;
+    last_edited: string;
+    bio?: string;
+    first_name?: string;
+    last_name?: string;
+    avatar?: string;
 }
 
 export const NAMESPACE = 'user';

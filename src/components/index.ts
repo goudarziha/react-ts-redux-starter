@@ -3,8 +3,8 @@ import Footer from "./Footer";
 import PrivateRoute from "./PrivateRoute";
 import FormErrorMessage from "./FormErrorMessage";
 import Avatar from "./Avatar";
-import ProfileForm from "./ProfileForm";
-import ChangePasswordForm from "./ChangePasswordForm";
+import ProfileForm from "./forms/ProfileForm";
+import ChangePasswordForm from "./forms/ChangePasswordForm";
 export {
   Header,
   Footer,

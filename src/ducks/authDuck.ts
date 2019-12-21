@@ -182,7 +182,6 @@ export const reducer = (state = initialState, action: AnyAction): any => {
       });
     case Action.REGISTER:
       return produce(state, draftState => {
-        console.log(action);
         const access_token = _.get(action.payload, ["tokens", "access_token"]);
         const refresh_token = _.get(action.payload, [
           "tokens",

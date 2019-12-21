@@ -1,7 +1,7 @@
 import * as React from "react";
 import useForm from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { changePassword } from "../ducks/authDuck";
+import { changePassword } from "../../ducks/authDuck";
 
 const ChangePasswordForm = () => {
   const dispatch = useDispatch();

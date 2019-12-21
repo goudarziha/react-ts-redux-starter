@@ -2,7 +2,7 @@ import * as React from "react";
 import * as _ from "lodash";
 import useForm from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { update } from "../ducks/authDuck";
+import { update } from "../../ducks/authDuck";
 
 const ProfileForm = () => {
   const dispatch = useDispatch();

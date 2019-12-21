@@ -1,28 +1,44 @@
 import React from "react";
-import * as _ from 'lodash';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import * as _ from "lodash";
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 import { Login, Register } from "./auth";
-import { Dashboard } from './pages';
-import { Header, Footer } from "./components";
-import { useSelector, useDispatch } from 'react-redux'
+import { Main, Dashboard, Settings, Profile } from "./containers";
+import { Header, Footer, PrivateRoute } from "./components";
+import { useSelector, useDispatch } from "react-redux";
+import $ from "jquery";
+import "bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
-import { checkToken } from './ducks/authDuck';
+import "bootstrap/dist/js/bootstrap.js";
+import { checkToken } from "./ducks/authDuck";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => _.get(state, ['auth', 'isAuthenticated']))
+  const isAuthenticated = useSelector(state =>
+    _.get(state, ["auth", "isAuthenticated"])
+  );
 
-  dispatch(checkToken());
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(checkToken());
+    }
+  });
 
   return (
     <div className="App" data-testid="app-test">
       <Router>
         <Header />
         <Switch>
-          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/" component={Main} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
-          <Route exact path="/dashboard" compoonent={Dashboard} />
+          <PrivateRoute exact path="/settings" component={Settings} />
+          <PrivateRoute exact path="/profile" component={Profile} />
+          <PrivateRoute exact path="/dashboard" component={Dashboard} />
         </Switch>
       </Router>
       <Footer />

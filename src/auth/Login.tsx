@@ -5,20 +5,19 @@ import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { login } from "../ducks/authDuck";
 import { Link } from "react-router-dom";
 import useForm from "react-hook-form";
+import { FormErrorMessage } from "../components";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const { handleSubmit, register, errors } = useForm();
   const { isAuthenticated } = useSelector(
     state => ({
       isAuthenticated: _.get(state, ["auth", "isAuthenticated"])
     }),
     shallowEqual
   );
-  const { handleSubmit, register, errors, formState } = useForm({
-    mode: "onChange"
-  });
-  const onSubmit = (data: any) => {
-    dispatch(login(data.email, data.password));
+  const onSubmit = ({ email, password }: any) => {
+    dispatch(login(email, password));
   };
 
   if (isAuthenticated) {
@@ -47,6 +46,7 @@ const Login = () => {
                       }
                     })}
                   />
+                  <FormErrorMessage errors={errors} name="email" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
@@ -54,8 +54,11 @@ const Login = () => {
                     className="form-control"
                     type="password"
                     name="password"
-                    ref={register}
+                    ref={register({
+                      required: "Required"
+                    })}
                   />
+                  <FormErrorMessage errors={errors} name="password" />
                 </div>
                 <button type="submit">Submit</button>
               </form>
@@ -77,6 +80,4 @@ const Login = () => {
   );
 };
 
-
 export default Login;
-

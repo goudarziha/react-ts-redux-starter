@@ -1,13 +1,13 @@
 import * as React from "react";
-import * as _ from 'lodash';
-import { Redirect } from 'react-router-dom';
+import * as _ from "lodash";
+import { Redirect } from "react-router-dom";
 import useForm from "react-hook-form";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { register as RegisterCall } from '../ducks/authDuck';
+import { register as RegisterCall } from "../ducks/authDuck";
 
 const Register = () => {
   const dispatch = useDispatch();
-  const { handleSubmit, register, errors, formState } = useForm({
+  const { handleSubmit, register, watch, errors } = useForm({
     mode: "onChange"
   });
 
@@ -19,9 +19,10 @@ const Register = () => {
   );
 
   if (isAuthenticated) {
-    return <Redirect to="/dashboard" />
+    return <Redirect to="/dashboard" />;
   }
   const onSubmit = (data: any) => {
+    console.log(errors);
     dispatch(RegisterCall(data.username, data.email, data.password));
   };
   return (
@@ -37,8 +38,12 @@ const Register = () => {
                   type="text"
                   name="username"
                   className="form-control"
-                  ref={register}
+                  ref={register({
+                    required: "Required",
+                    minLength: 3
+                  })}
                 />
+                {errors.username && errors.username.message}
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -62,17 +67,24 @@ const Register = () => {
                   className="form-control"
                   type="password"
                   name="password"
-                  ref={register}
+                  ref={register({ required: "Required", minLength: 8 })}
                 />
+                {errors.password && errors.password.message}
               </div>
               <div className="form-group">
                 <label htmlFor="password2">Confirm Password</label>
                 <input
                   className="form-control"
-                  type="password2"
+                  type="password"
                   name="password2"
-                  ref={register}
+                  ref={register({
+                    required: "Required",
+                    validate: value => {
+                      return value === watch("password");
+                    }
+                  })}
                 />
+                {errors.password2 && errors.password2.message}
               </div>
               <button type="submit">Sign Up</button>
             </form>

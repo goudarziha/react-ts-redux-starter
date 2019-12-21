@@ -1,15 +1,16 @@
 import { combineReducers } from "redux";
-import { expenseReducer } from "./expenseDuck";
-import * as authDuck from '../ducks/authDuck';
-import * as userDuck from '../ducks/userDuck';
+import * as authDuck from "../ducks/authDuck";
+import * as userDuck from "../ducks/userDuck";
+import * as messageDuck from "../ducks/messageDuck";
 
 export interface State {
-  [authDuck.NAMESPACE]: authDuck.Slice,
-  [userDuck.NAMESPACE]: userDuck.Slice
+  [authDuck.NAMESPACE]: authDuck.Slice;
+  [userDuck.NAMESPACE]: userDuck.Slice;
+  [messageDuck.NAMESPACE]: messageDuck.Slice;
 }
 
 export const rootReducer = combineReducers({
-  expenses: expenseReducer,
   [authDuck.NAMESPACE]: authDuck.reducer,
-  [userDuck.NAMESPACE]: userDuck.reducer
+  [userDuck.NAMESPACE]: userDuck.reducer,
+  [messageDuck.NAMESPACE]: messageDuck.reducer
 });

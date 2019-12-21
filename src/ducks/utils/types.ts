@@ -34,7 +34,7 @@ export interface Config {
 }
 
 export interface Request<Q> {
-    path: String;
+    path: string;
     method: HttpMethod;
     token?: string;
     data?: Q;

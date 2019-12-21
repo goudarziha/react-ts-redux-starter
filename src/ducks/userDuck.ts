@@ -33,7 +33,7 @@ export const Action = {
 };
 
 export type Slice = {
-  user: string | undefined;
+  user: User | undefined;
 };
 
 export const getAll = () => (dispatch: Dispatch<any>) => {

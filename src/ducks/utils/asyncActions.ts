@@ -1,9 +1,11 @@
 import { Dispatch } from "redux";
 import * as _ from "lodash";
-import { ActionStatus, Request } from "../utils/types";
+import { ActionStatus, Request, Severity } from "../utils/types";
 import uuidv4 from "uuid/v4";
 import { TIMEOUT } from "dns";
 import axios from "axios";
+import { setMessage, Message } from "../messageDuck";
+import { useDispatch } from "react-redux";
 
 interface TimeStamped {
   timestamp: number;
@@ -47,7 +49,7 @@ export const beginAsyncRequest = async <M>(
 export const handleAsyncResponse = async <M, R>(
   dispatch: Dispatch,
   actionType: string,
-  request: Request<any>,
+  request: Request<R> | null,
   inMeta: M
 ) => {
   let meta = mergeMeta(inMeta);
@@ -57,37 +59,46 @@ export const handleAsyncResponse = async <M, R>(
     ActionStatus.REQUESTED,
     meta
   );
-  axios
-    .request({
-      url: request.path,
-      method: request.method,
-      headers: {
-        Authorization: `Bearer ${request.token}`,
-        "Content-Type": "application/json"
-      },
-      data: request.data
-    })
-    .then(response => {
-      updateAsyncStatus(dispatch, actionType, ActionStatus.REQUESTED, meta);
-      if (response.status === 200 && response.data) {
+  if (!_.isNull(request)) {
+    axios
+      .request({
+        url: request.path,
+        method: request.method,
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+          "Content-Type": "application/json"
+        },
+        data: request.data
+      })
+      .then(response => {
+        updateAsyncStatus(dispatch, actionType, ActionStatus.REQUESTED, meta);
+        const metaMessage = _.get(meta, "message");
+        console.log(metaMessage);
+        if (!_.isNil(metaMessage)) {
+          dispatch<any>(
+            setMessage(Severity.INFO, actionType, response.data.message)
+          );
+        }
+        if (response.status === 200 && response.data) {
+          updateAsyncStatus(
+            dispatch,
+            actionType,
+            ActionStatus.SUCCESS,
+            meta,
+            response.data
+          );
+        }
+      })
+      .catch(error => {
         updateAsyncStatus(
           dispatch,
           actionType,
-          ActionStatus.SUCCESS,
+          ActionStatus.FAILURE,
           meta,
-          response.data
+          error
         );
-      }
-    })
-    .catch(error => {
-      updateAsyncStatus(
-        dispatch,
-        actionType,
-        ActionStatus.FAILURE,
-        meta,
-        error
-      );
-    });
+      });
+  }
 };
 
 // export const handleAsyncResponse = async<M, R>(

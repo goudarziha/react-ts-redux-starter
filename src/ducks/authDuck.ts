@@ -47,7 +47,7 @@ export const login = (email: string, password: string) => (
     method: HttpMethod.POST,
     data: { email, password }
   };
-  handleAsyncResponse(dispatch, actionType, request, {});
+  handleAsyncResponse(dispatch, actionType, request, { message: "login" });
 };
 
 export const register = (username: string, email: string, password: string) => (

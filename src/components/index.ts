@@ -5,6 +5,8 @@ import FormErrorMessage from "./FormErrorMessage";
 import Avatar from "./Avatar";
 import ProfileForm from "./forms/ProfileForm";
 import ChangePasswordForm from "./forms/ChangePasswordForm";
+import ProfileCard from "./ProfileCard";
+
 export {
   Header,
   Footer,
@@ -12,5 +14,6 @@ export {
   FormErrorMessage,
   Avatar,
   ProfileForm,
-  ChangePasswordForm
+  ChangePasswordForm,
+  ProfileCard
 };

@@ -26,6 +26,15 @@ const ProfileForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group">
+        <label htmlFor="avatar">Avatar</label>
+        <input
+          type="file"
+          name="avatar"
+          ref={register}
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
         <label htmlFor="first_name">First Name</label>
         <input
           className="form-control"

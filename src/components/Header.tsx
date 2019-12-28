@@ -16,7 +16,7 @@ const Header = () => {
   };
 
   const guestLinks = (
-    <ul className="navbar-nav ml-auto">
+    <ul className="navbar-nav ml-auto" data-testid="guest-header">
       <li className="nav-item">
         <Link to="/register" className="nav-link">
           Register
@@ -31,7 +31,7 @@ const Header = () => {
   );
 
   const authLinks = (
-    <ul className="navbar-nav ml-auto">
+    <ul className="navbar-nav ml-auto" data-testid="auth-header">
       <li className="nav-item dropdown">
         <div
           className="d-flex flex-row"

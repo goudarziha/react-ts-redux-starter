@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import useForm from "react-hook-form";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { register as RegisterCall } from "../ducks/authDuck";
@@ -86,8 +86,15 @@ const Register = () => {
                 />
                 {errors.password2 && errors.password2.message}
               </div>
-              <button type="submit">Sign Up</button>
+              <button type="submit" className="btn btn-primary">
+                Sign Up
+              </button>
             </form>
+            <div className="d-flex justify-content-start my-1">
+              <Link to="/login" className="">
+                Already have an account?
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -29,7 +29,7 @@ export enum HttpMethod {
 }
 
 export type Severity = Enum<typeof Severity>;
-export const Severity = Enum("FATAL", "WARNING", "INFO", "SUCCESS");
+export const Severity = Enum("DANGER", "WARNING", "INFO", "SUCCESS", "DEFAULT");
 
 export interface Config {
   BASE_API_URL: string;

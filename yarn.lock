@@ -2013,6 +2013,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-alert@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@types/react-alert/-/react-alert-5.2.0.tgz#cf5112acb57303dd2066f5a7f052135307b604a8"
+  integrity sha512-1cyu/vQ4X0CJVC3X4CrJHRBc/9BvTqOF9FH6iy/4TLwPng++GC4ftxS/UaM91FqsKjao7pPtqxUlW1cRafNHLw==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@*", "@types/react-dom@^16.9.0":
   version "16.9.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.4.tgz#0b58df09a60961dcb77f62d4f1832427513420df"
@@ -10817,6 +10824,13 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-notifications-component@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/react-notifications-component/-/react-notifications-component-2.2.4.tgz#f4730bb84e2a770757f8b9e408c1dc40b4261f0e"
+  integrity sha512-OhK9dnjeOv/EVtsKdYTE8fhTQNjTWQoVhovPu8Mda3rCbG6ArkonENdyVd1PmSYo279y8RCBfkKmCIaws4QZPw==
+  dependencies:
+    prop-types "^15.6.2"
 
 react-popper-tooltip@^2.8.3:
   version "2.10.1"

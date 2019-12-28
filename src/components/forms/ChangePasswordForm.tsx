@@ -32,7 +32,9 @@ const ChangePasswordForm = () => {
             ref={register}
           />
         </div>
-        <button type="submit">Change Password</button>
+        <button type="submit" className="btn btn-primary">
+          Change Password
+        </button>
       </form>
     </div>
   );

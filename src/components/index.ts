@@ -6,6 +6,7 @@ import Avatar from "./Avatar";
 import ProfileForm from "./forms/ProfileForm";
 import ChangePasswordForm from "./forms/ChangePasswordForm";
 import ProfileCard from "./ProfileCard";
+import Notification from "./Notification";
 
 export {
   Header,
@@ -15,5 +16,6 @@ export {
   Avatar,
   ProfileForm,
   ChangePasswordForm,
-  ProfileCard
+  ProfileCard,
+  Notification
 };

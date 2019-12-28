@@ -5,16 +5,12 @@ module.exports = ({ config }) => {
       {
         loader: require.resolve("awesome-typescript-loader"),
         options: {
-          reportFiles: ["../**/src/**/*.{ts,tsx}"]
+          presets: [["react-app", { flow: false, typescript: true }]],
+          configFileName: "./.storybook/tsconfig.json"
         }
-      }
-    ]
-  });
-  config.module.rules.push({
-    test: /\.ttf$/,
-    use: [
+      },
       {
-        loader: require.resolve("file-loader")
+        loader: require.resolve("react-docgen-typescript-loader")
       }
     ]
   });

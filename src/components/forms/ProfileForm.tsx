@@ -11,7 +11,8 @@ const ProfileForm = () => {
   const { first_name, last_name, bio } = useSelector(state => ({
     first_name: _.get(state, ["auth", "user", "first_name"]),
     last_name: _.get(state, ["auth", "user", "last_name"]),
-    bio: _.get(state, ["auth", "user", "bio"])
+    bio: _.get(state, ["auth", "user", "bio"]),
+    avatar: _.get(state, ["auth", "user", "avatar"])
   }));
 
   React.useEffect(() => {
@@ -20,8 +21,8 @@ const ProfileForm = () => {
     setValue("bio", bio);
   });
 
-  const onSubmit = ({ first_name, last_name, bio }: any) => {
-    dispatch(update(first_name, last_name, bio));
+  const onSubmit = ({ first_name, last_name, bio, avatar }: any) => {
+    dispatch(update(first_name, last_name, bio, avatar));
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -56,7 +57,9 @@ const ProfileForm = () => {
         <label htmlFor="bio">Bio</label>
         <textarea className="form-control" name="bio" ref={register}></textarea>
       </div>
-      <button type="submit">Update</button>
+      <button type="submit" className="btn btn-primary">
+        Update
+      </button>
     </form>
   );
 };

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import useForm from "react-hook-form";
 import { FormErrorMessage } from "../components";
 
-const Login = () => {
+const Login: React.FC = () => {
   const dispatch = useDispatch();
   const { handleSubmit, register, errors } = useForm();
   const { isAuthenticated } = useSelector(
@@ -60,7 +60,9 @@ const Login = () => {
                   />
                   <FormErrorMessage errors={errors} name="password" />
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
               </form>
               <div className="d-flex justify-content-start my-1">
                 <Link to="/register" className="">
@@ -68,7 +70,7 @@ const Login = () => {
                 </Link>
               </div>
               <div className="d-flex justify-content-start my-1">
-                <Link to="/forgot-password" className="">
+                <Link to="/reset" className="">
                   Forgot password?
                 </Link>
               </div>

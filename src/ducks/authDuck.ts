@@ -1,7 +1,7 @@
 import { AnyAction } from "redux";
 import _ from "lodash";
 import { produce } from "immer";
-import { ActionStatus, ThunkResult } from "./utils/types";
+import { ActionStatus, ThunkResult, Request } from "./utils/types";
 import { Dispatch } from "redux";
 import { Response, HttpMethod } from "./utils/types";
 import { beginAsyncRequest, handleAsyncResponse } from "./utils/asyncActions";
@@ -90,21 +90,25 @@ export const checkToken = () => (
   handleAsyncResponse(dispatch, actionType, request, {});
 };
 
-export const update = (first_name: string, last_name: string, bio: string) => (
-  dispatch: Dispatch<any>,
-  getState: () => State
-) => {
+export const update = (
+  first_name: string,
+  last_name: string,
+  bio: string,
+  avatar: any
+) => (dispatch: Dispatch<any>, getState: () => State) => {
   const actionType = Action.UPDATE;
   const token = getState().auth.access_token;
   beginAsyncRequest(dispatch, actionType, {});
   const url = BASE_URL + "/auth/update";
-  const request = {
+  const request: Request<any> = {
     path: url,
     method: HttpMethod.PUT,
     token,
-    data: { first_name, last_name, bio }
+    data: { first_name, last_name, bio, avatar }
   };
-  handleAsyncResponse(dispatch, actionType, request, {});
+  handleAsyncResponse(dispatch, actionType, request, {
+    message: "User successfully updated"
+  });
 };
 
 export const changePassword = (old_password: string, new_password: string) => (

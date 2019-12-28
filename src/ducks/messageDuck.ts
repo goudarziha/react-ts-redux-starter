@@ -1,5 +1,5 @@
 import { AnyAction } from "redux";
-import * as _ from "lodash";
+import _ from "lodash";
 import { produce } from "immer";
 import { ActionStatus, ThunkResult } from "./utils/types";
 import { Dispatch } from "redux";
@@ -53,9 +53,19 @@ export const initialState = {
 export const reducer = (state = initialState, action: AnyAction): any => {
   switch (action.type) {
     case Action.SEND_MESSAGE:
-      return state;
+      return produce(state, draftState => {
+        if (action.status[Action.SEND_MESSAGE] === ActionStatus.REQUESTED) {
+          _.set(draftState, ["message"], _.get(action.meta, ["message"]));
+          _.set(draftState, ["type"], _.get(action.meta, ["severity"]));
+        }
+      });
     case Action.DISMISS_MESSAGE:
-      return state;
+      return produce(state, draftState => {
+        if (action.status[Action.DISMISS_MESSAGE] === ActionStatus.REQUESTED) {
+          _.set(draftState, ["message"], "");
+          _.set(draftState, ["type"], "");
+        }
+      });
     default:
       return state;
   }

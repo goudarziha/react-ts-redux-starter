@@ -8,7 +8,9 @@ const Profile = () => {
   return (
     <div className="container">
       <h1>PROFILE!</h1>
-      {user.username}
+      <div className="card">
+        <div className="card-body">{user.username}</div>
+      </div>
     </div>
   );
 };

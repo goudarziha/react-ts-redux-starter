@@ -18,7 +18,13 @@ const ProfileCardProps = ({
 }: ProfileCardProps) => {
   return (
     <div className="card">
-      <div className="card-body">{username}</div>
+      <Avatar name={username} size={64} />
+      <div className="card-body">
+        <p className="card-text">{username}</p>
+      </div>
+      <div className="card-footer">
+        <small className="text-muted">{created}</small>
+      </div>
     </div>
   );
 };

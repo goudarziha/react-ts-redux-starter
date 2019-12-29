@@ -1,13 +1,16 @@
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 import * as React from "react";
-import * as _ from "lodash";
+import _ from "lodash";
 
 interface AvatarProps {
   name: string;
   size: number;
   url?: string;
+  style?: any;
 }
 
-const Avatar = ({ name, size, url, ...props }: AvatarProps) => {
+const Avatar = ({ name, size, url, style, ...props }: AvatarProps) => {
   const avatarUrl = (name: string, size: number): string => {
     return `https://ui-avatars.com/api/?name=${name}&size=${size}`;
   };
@@ -15,16 +18,19 @@ const Avatar = ({ name, size, url, ...props }: AvatarProps) => {
     <img
       src={!_.isEmpty(url) ? url : avatarUrl(name, size)}
       alt={name}
-      style={{
-        borderRadius: size / 2,
-        width: size,
-        height: size,
-        justifyContent: "center",
-        alignItems: "center",
-        display: "flex",
-        color: "white",
-        fontSize: size / 2.2
-      }}
+      css={[
+        {
+          borderRadius: size / 2,
+          width: size,
+          height: size,
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+          color: "white",
+          fontSize: size / 2.2
+        },
+        style
+      ]}
       {...props}
       data-testid="avatar-test"
     />

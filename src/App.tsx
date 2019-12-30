@@ -1,7 +1,13 @@
 import React from "react";
 import _ from "lodash";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import { Login, Register, ResetPassword, ChangePasswordReset } from "./auth";
+import {
+  Login,
+  Register,
+  ResetPassword,
+  ChangePasswordReset,
+  ConfirmEmail
+} from "./auth";
 import { Main, Dashboard, Settings, Profile } from "./containers";
 import { Header, Footer, PrivateRoute } from "./components";
 import { useSelector, useDispatch } from "react-redux";
@@ -59,6 +65,7 @@ const App: React.FC = () => {
           <Route exact path="/register" component={Register} />
           <Route exact path="/reset" component={ResetPassword} />
           <Route exact path="/change/:token" component={ChangePasswordReset} />
+          <Route exact path="/confirm/:token" component={ConfirmEmail} />
           <PrivateRoute exact path="/settings" component={Settings} />
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />

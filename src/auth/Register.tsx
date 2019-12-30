@@ -3,10 +3,11 @@ import * as _ from "lodash";
 import { Redirect, Link } from "react-router-dom";
 import useForm from "react-hook-form";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { register as RegisterCall } from "../ducks/authDuck";
+import { register as RegisterCall, sendConfirmEmail } from "../ducks/authDuck";
 
 const Register = () => {
   const dispatch = useDispatch();
+  const [email, setEmail] = React.useState<string>("");
   const { handleSubmit, register, watch, errors } = useForm({
     mode: "onChange"
   });
@@ -19,10 +20,11 @@ const Register = () => {
   );
 
   if (isAuthenticated) {
+    dispatch(sendConfirmEmail());
     return <Redirect to="/dashboard" />;
   }
   const onSubmit = (data: any) => {
-    console.log(errors);
+    setEmail(data.email);
     dispatch(RegisterCall(data.username, data.email, data.password));
   };
   return (

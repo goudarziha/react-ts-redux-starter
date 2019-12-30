@@ -20,7 +20,9 @@ export const Action = {
   RESET_PASSWORD_REQUEST: `${NAMESPACE}/RESET_PASSWORD_REQUEST`,
   RESET_PASSWORD: `${NAMESPACE}/RESET_PASSWORD`,
   CHANGE_PASSWORD: `${NAMESPACE}/CHANGE_PASSWORD`,
-  UPDATE: `${NAMESPACE}/UPDATE`
+  UPDATE: `${NAMESPACE}/UPDATE`,
+  SEND_CONFIRM_EMAIL: `${NAMESPACE}/SEND_CONFIRM_EMAIL`,
+  CONFIRM_EMAIL: `${NAMESPACE}/CONFIRM_EMAIL`
 };
 
 export enum AuthStrings {
@@ -140,7 +142,6 @@ export const changePasswordResetToken = (token: string, password: string) => (
     method: HttpMethod.POST,
     data: { token, password }
   };
-  console.log(token, password);
   handleAsyncResponse(dispatch, actionType, request, {
     message: "Password Successfully Reset"
   });
@@ -154,6 +155,43 @@ export const requestPasswordReset = (email: string) => (
   const url = BASE_URL + "/auth/reset_password";
   const request = { path: url, method: HttpMethod.POST, data: { email } };
   handleAsyncResponse(dispatch, actionType, request, {});
+};
+
+export const sendConfirmEmail = () => (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const actionType = Action.SEND_CONFIRM_EMAIL;
+  const token = getState().auth.access_token;
+  beginAsyncRequest(dispatch, actionType, {});
+  const url = BASE_URL + "/auth/send_confirm";
+  const request = {
+    path: url,
+    method: HttpMethod.POST,
+    token,
+    data: {}
+  };
+  console.log("yes", token);
+  handleAsyncResponse(dispatch, actionType, request, {});
+};
+
+export const confirmEmail = (token: any) => (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const actionType = Action.CONFIRM_EMAIL;
+  const access_token = getState().auth.access_token;
+  beginAsyncRequest(dispatch, actionType, {});
+  const url = BASE_URL + "/auth/confirm";
+  const request = {
+    path: url,
+    method: HttpMethod.POST,
+    token: access_token,
+    data: { token }
+  };
+  handleAsyncResponse(dispatch, actionType, request, {
+    message: "Email successfully confirmed"
+  });
 };
 
 const saveTokenStorage = (refresh_token: string, access_token: string) => {
@@ -214,15 +252,16 @@ export const reducer = (state = initialState, action: AnyAction): any => {
         if (action.status[Action.REGISTER] === ActionStatus.SUCCESS) {
           saveTokenStorage(refresh_token, access_token);
           _.set(draftState, ["isAuthenticated"], true);
+          _.set(draftState, ["user"], _.get(action.payload, ["user"]));
           _.set(
             draftState,
             ["access_token"],
-            _.get(action.payload, ["data", "tokens", "access_token"])
+            _.get(action.payload, ["tokens", "access_token"])
           );
           _.set(
             draftState,
             ["refresh_token"],
-            action.payload.tokens.refresh_token
+            _.get(action.payload, ["tokens", "refresh_token"])
           );
         }
       });
@@ -249,9 +288,17 @@ export const reducer = (state = initialState, action: AnyAction): any => {
           _.set(draftState, ["user"], _.get(action.payload, ["user"]));
         }
       });
+    case Action.CONFIRM_EMAIL:
+      return produce(state, draftState => {
+        if (action.status[Action.CONFIRM_EMAIL] === ActionStatus.SUCCESS) {
+          console.log(action);
+          _.set(draftState, ["user"], _.get(action.payload, ["user"]));
+        }
+      });
     case Action.CHANGE_PASSWORD:
     case Action.RESET_PASSWORD_REQUEST:
     case Action.RESET_PASSWORD:
+    case Action.SEND_CONFIRM_EMAIL:
       return state;
     default:
       return state;

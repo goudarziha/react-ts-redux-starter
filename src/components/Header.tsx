@@ -10,6 +10,9 @@ const Header = () => {
   const isAuthenticated = useSelector(state =>
     _.get(state, ["auth", "isAuthenticated"])
   );
+  const username = useSelector(state =>
+    _.get(state, ["auth", "user", "username"])
+  );
 
   const logoutUser = () => {
     dispatch(logout());
@@ -42,7 +45,7 @@ const Header = () => {
             style={{ height: "100%", alignSelf: "center" }}
             className="mr-2"
           >
-            name
+            {username}
           </span>
           <Avatar name="df" size={36} />
         </div>

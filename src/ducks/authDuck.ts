@@ -17,6 +17,7 @@ export const Action = {
   LOGOUT: `${NAMESPACE}/LOGOUT`,
   CHECK_TOKEN: `${NAMESPACE}/CHECK_TOKEN`,
   REGISTER: `${NAMESPACE}/REGISTER`,
+  RESET_PASSWORD_REQUEST: `${NAMESPACE}/RESET_PASSWORD_REQUEST`,
   RESET_PASSWORD: `${NAMESPACE}/RESET_PASSWORD`,
   CHANGE_PASSWORD: `${NAMESPACE}/CHANGE_PASSWORD`,
   UPDATE: `${NAMESPACE}/UPDATE`
@@ -128,8 +129,27 @@ export const changePassword = (old_password: string, new_password: string) => (
   handleAsyncResponse(dispatch, actionType, request, {});
 };
 
-export const resetPassword = (email: string) => (dispatch: Dispatch<any>) => {
+export const changePasswordResetToken = (token: string, password: string) => (
+  dispatch: Dispatch<any>
+) => {
   const actionType = Action.RESET_PASSWORD;
+  beginAsyncRequest(dispatch, actionType, {});
+  const url = BASE_URL + "/auth/confirm_password_reset";
+  const request = {
+    path: url,
+    method: HttpMethod.POST,
+    data: { token, password }
+  };
+  console.log(token, password);
+  handleAsyncResponse(dispatch, actionType, request, {
+    message: "Password Successfully Reset"
+  });
+};
+
+export const requestPasswordReset = (email: string) => (
+  dispatch: Dispatch<any>
+) => {
+  const actionType = Action.RESET_PASSWORD_REQUEST;
   beginAsyncRequest(dispatch, actionType, {});
   const url = BASE_URL + "/auth/reset_password";
   const request = { path: url, method: HttpMethod.POST, data: { email } };
@@ -155,7 +175,7 @@ export const initialState = {
     [Action.CHECK_TOKEN]: ActionStatus.IDLE,
     [Action.LOGOUT]: ActionStatus.IDLE,
     [Action.CHANGE_PASSWORD]: ActionStatus.IDLE,
-    [Action.RESET_PASSWORD]: ActionStatus.IDLE,
+    [Action.RESET_PASSWORD_REQUEST]: ActionStatus.IDLE,
     [Action.UPDATE]: ActionStatus.IDLE
   },
   access_token: localStorage.getItem(AuthStrings.ACCESS_TOKEN),
@@ -230,7 +250,7 @@ export const reducer = (state = initialState, action: AnyAction): any => {
         }
       });
     case Action.CHANGE_PASSWORD:
-      return state;
+    case Action.RESET_PASSWORD_REQUEST:
     case Action.RESET_PASSWORD:
       return state;
     default:

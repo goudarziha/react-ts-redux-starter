@@ -2,6 +2,7 @@ import * as React from "react";
 import _ from "lodash";
 import useForm from "react-hook-form";
 import { FormErrorMessage } from "../components";
+import { requestPasswordReset } from "../ducks/authDuck";
 import { useDispatch } from "react-redux";
 
 const ResetPassword: React.FC = () => {
@@ -13,6 +14,7 @@ const ResetPassword: React.FC = () => {
   const onSubmit = (data: any) => {
     setEmail(data.email);
     setSent(true);
+    dispatch(requestPasswordReset(data.email));
   };
 
   if (sent) {

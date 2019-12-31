@@ -7,8 +7,13 @@ import authDuck from "../../ducks/authDuck";
 import { HashRouter as Router } from "react-router-dom";
 
 const store = createStore(authDuck, {
-  isAuthenticated: true
+  status: {},
+  isAuthenticated: true,
+  access_token: "access_token",
+  refresh_token: "refresh_token",
+  user: {}
 });
+
 test("header guest", () => {
   const { getByTestId } = render(
     <Provider store={store}>

@@ -7,6 +7,10 @@ import ProfileForm from "./forms/ProfileForm";
 import ChangePasswordForm from "./forms/ChangePasswordForm";
 import ProfileCard from "./ProfileCard";
 import Notification from "./Notification";
+import PasswordInput from "./PasswordInput";
+import DifficultyCircle from "./DifficultyCircle";
+import ExerciseButton from "./ExerciseButton";
+import Badge from "./Badge";
 
 export {
   Header,
@@ -17,5 +21,9 @@ export {
   ProfileForm,
   ChangePasswordForm,
   ProfileCard,
-  Notification
+  Notification,
+  PasswordInput,
+  DifficultyCircle,
+  ExerciseButton,
+  Badge
 };

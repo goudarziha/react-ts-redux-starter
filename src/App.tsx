@@ -19,6 +19,7 @@ import { checkToken } from "./ducks/authDuck";
 //@ts-ignore
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 //@ts-ignore
 import { store } from "react-notifications-component";
 

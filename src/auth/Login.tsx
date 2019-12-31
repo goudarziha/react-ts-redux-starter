@@ -5,7 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { login } from "../ducks/authDuck";
 import { Link } from "react-router-dom";
 import useForm from "react-hook-form";
-import { FormErrorMessage } from "../components";
+import { FormErrorMessage, PasswordInput } from "../components";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();

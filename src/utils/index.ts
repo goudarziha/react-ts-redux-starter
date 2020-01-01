@@ -1,3 +1,19 @@
 import { createPostRequest } from "./requests";
 import { BadgeType } from "./types";
-export { BadgeType };
+import {
+  testUser,
+  testUser2,
+  testUser3,
+  comments,
+  reviews,
+  sampleExercises
+} from "./testModels";
+export {
+  BadgeType,
+  testUser,
+  testUser2,
+  testUser3,
+  comments,
+  reviews,
+  sampleExercises
+};

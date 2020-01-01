@@ -14,3 +14,9 @@ export const BadgeType = Enum(
   "LIGHT",
   "DARK"
 );
+
+export type Difficulty = Enum<typeof Difficulty>;
+export const Difficulty = Enum("ADVANCED", "INTERMEDIATE", "BEGINNER");
+
+export type Colors = Enum<typeof Colors>;
+export const Colors = Enum("white", "red", "yellow", "green");

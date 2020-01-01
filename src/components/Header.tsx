@@ -35,6 +35,9 @@ const Header = () => {
 
   const authLinks = (
     <ul className="navbar-nav ml-auto" data-testid="auth-header">
+      <li className="nav-item">
+        <Link to="/workout">New Workout</Link>
+      </li>
       <li className="nav-item dropdown">
         <div
           className="d-flex flex-row"

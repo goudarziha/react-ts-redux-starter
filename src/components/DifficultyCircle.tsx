@@ -1,4 +1,6 @@
 import * as React from "react";
+import _ from "lodash";
+import { Difficulty, Colors } from "../utils/types";
 
 interface DifficultyCircleProps {
   difficulty: number;
@@ -31,8 +33,8 @@ const difficultyCircle = ({
           data-testid="difficulty-test"
           className="d-flex flex-row align-items-center"
         >
-          <div className="mr-1">{guage("red")}</div>
-          {text ? " Advanced" : ""}
+          <div className="mr-1">{guage(Colors.red)}</div>
+          {text ? _.capitalize(Difficulty.ADVANCED) : ""}
         </div>
       );
     case 2:
@@ -41,8 +43,8 @@ const difficultyCircle = ({
           data-testid="difficulty-test"
           className="d-flex flex-row align-items-center"
         >
-          <div className="mr-1">{guage("yellow")}</div>
-          {text ? " Intermediate" : ""}
+          <div className="mr-1">{guage(Colors.yellow)}</div>
+          {text ? _.capitalize(Difficulty.INTERMEDIATE) : ""}
         </div>
       );
     case 1:
@@ -51,8 +53,8 @@ const difficultyCircle = ({
           data-testid="difficulty-test"
           className="d-flex flex-row align-items-center"
         >
-          <div className="mr-1">{guage("green")}</div>
-          {text ? "Beginner" : ""}
+          <div className="mr-1">{guage(Colors.green)}</div>
+          {text ? _.capitalize(Difficulty.BEGINNER) : ""}
         </div>
       );
     default:

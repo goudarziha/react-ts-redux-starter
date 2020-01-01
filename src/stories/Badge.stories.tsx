@@ -17,7 +17,3 @@ stories.add("danger", () => {
 stories.add("warning", () => {
   return <Badge text={"test"} type={BadgeType.WARNING} />;
 });
-
-// stories.add("multiple", () => {
-//   const items = ["one", "two", "three", "four", "five"];
-// });

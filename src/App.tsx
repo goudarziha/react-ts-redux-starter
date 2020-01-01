@@ -8,7 +8,7 @@ import {
   ChangePasswordReset,
   ConfirmEmail
 } from "./auth";
-import { Main, Dashboard, Settings, Profile } from "./containers";
+import { Main, Dashboard, Settings, Profile, Workout } from "./containers";
 import { Header, Footer, PrivateRoute } from "./components";
 import { useSelector, useDispatch } from "react-redux";
 import $ from "jquery";
@@ -70,6 +70,7 @@ const App: React.FC = () => {
           <PrivateRoute exact path="/settings" component={Settings} />
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          <PrivateRoute exact path="/workout" component={Workout} />
         </Switch>
       </Router>
       <Footer />

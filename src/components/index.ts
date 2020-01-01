@@ -11,6 +11,8 @@ import PasswordInput from "./PasswordInput";
 import DifficultyCircle from "./DifficultyCircle";
 import ExerciseButton from "./ExerciseButton";
 import Badge from "./Badge";
+import ExerciseRow from "./ExerciseRow";
+import WorkoutForm from "./forms/WorkoutForm";
 
 export {
   Header,
@@ -25,5 +27,7 @@ export {
   PasswordInput,
   DifficultyCircle,
   ExerciseButton,
-  Badge
+  Badge,
+  ExerciseRow,
+  WorkoutForm
 };

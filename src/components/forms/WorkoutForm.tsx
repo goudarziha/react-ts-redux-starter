@@ -3,37 +3,23 @@ import _ from "lodash";
 import useFrom from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Difficulty } from "../../utils/types";
+import { Workout, Exercise, create } from "../../ducks/workoutDuck";
 
 interface WorkoutFormProps {}
 
-const WorkoutForm = ({}: WorkoutFormProps) => {
+const WorkoutForm: React.FC = ({}: WorkoutFormProps) => {
   const dispatch = useDispatch();
-  const [count, setCount] = React.useState(0);
-  const [exercises, setExercises] = React.useState<{}>();
-  const [day, setDay] = React.useState<number[]>([1]);
-  const { handleSubmit, register, setValue } = useFrom();
+  const [exercises, setExercises] = React.useState<number>(1);
+  const [day, setDay] = React.useState<number>(1);
+  const { handleSubmit, register } = useFrom();
 
   const onSubmit = (data: any) => {
     console.log(data);
+    dispatch(create(data));
   };
 
-  const exerciseRow = () => {
-    return (
-      <div className="form-group">
-        <label htmlFor={count.toString()}>Exercise</label>
-        <input
-          type="text"
-          name={`${count}-exercise`}
-          className="form-control"
-          ref={register}
-        />
-      </div>
-    );
-  };
-
-  const handleAdd = () => {
-    setCount(prev => prev + 1);
-    setDay(day => [...day, day.length + 1]);
+  const createArrayWithNumbers = (length: number) => {
+    return Array.from({ length }, (_, k) => k + 1);
   };
 
   return (
@@ -66,26 +52,90 @@ const WorkoutForm = ({}: WorkoutFormProps) => {
         </select>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="setDay">Day</label>
-        <select className="form-control" name="setDay">
-          {day.map(d => {
-            return (
-              <option key={d} id={d.toString()}>
-                {d}
-              </option>
-            );
-          })}
-        </select>
+      <div className="form-row">
+        <div className="col-md-8">
+          <label htmlFor="setDay">Day</label>
+          <select className="form-control" name="setDay">
+            {_.times(day, d => {
+              return (
+                <option value={d} key={d} id={d.toString()}>
+                  {d}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="col">
+          <button
+            className="btn btn-primary form-control"
+            onClick={() => setDay(day + 1)}
+          >
+            Add Day
+          </button>
+        </div>
+        <div className="col">
+          <button className="btn btn-primary" onClick={() => setDay(day - 1)}>
+            Remove Day
+          </button>
+        </div>
       </div>
 
-      <button onClick={() => handleAdd()}>Add Day</button>
+      <button
+        className="btn btn-primary"
+        onClick={() => setExercises(exercises + 1)}
+      >
+        Add Exercise
+      </button>
 
-      {day.map(d => {
+      {createArrayWithNumbers(exercises).map(index => {
         return (
-          <div key={d}>
-            <h1>{d}</h1>
-          </div>
+          <>
+            <div className="form-row">
+              <div className="col-md-6">
+                <label htmlFor="exercise-name">Exercise Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name={`exercise[${index}]`}
+                  placeholder={"Exercise Name"}
+                  ref={register}
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="exercise-sets">Sets</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name={`sets`}
+                  ref={register}
+                  min="1"
+                  max="100"
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="exercise-reps">Repititions</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name={`repetitions`}
+                  ref={register}
+                  min="1"
+                  max="100"
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="exercise-day">Day</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name={`day`}
+                  ref={register}
+                  min="1"
+                  max={day}
+                />
+              </div>
+            </div>
+          </>
         );
       })}
       <button type="submit" className="btn btn-primary">

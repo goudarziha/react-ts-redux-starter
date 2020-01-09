@@ -25,12 +25,14 @@ export interface Exercise {
   sets: number;
   repititions: number;
   rest: string;
+  day: number;
 }
 
 export interface Workout {
   name: string;
   user: User;
   created: string;
+  days: number;
   difficulty: number;
   tags: string[];
   exercises: Exercise[];
@@ -93,10 +95,29 @@ export const getById = (username: string) => (
   handleAsyncResponse(dispatch, actionType, request, {});
 };
 
+export const create = (workout: Workout) => (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const actionType = Action.CREATE;
+
+  const access_token = getState().auth.access_token;
+  beginAsyncRequest(dispatch, actionType, {});
+  const url = `${BASE_URL}/workout/create`;
+  const request = {
+    path: url,
+    method: HttpMethod.POST,
+    token: access_token,
+    data: { workout }
+  };
+  handleAsyncResponse(dispatch, actionType, request, {});
+};
+
 export const initialState = {
   status: {
     [Action.GET]: ActionStatus.IDLE,
-    [Action.GET_BY_ID]: ActionStatus.IDLE
+    [Action.GET_BY_ID]: ActionStatus.IDLE,
+    [Action.CREATE]: ActionStatus.IDLE
   },
   self: {},
   users: {}

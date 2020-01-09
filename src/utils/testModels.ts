@@ -40,9 +40,9 @@ export const comments: Comment[] = [
   }
 ];
 export const sampleExercises: Exercise[] = [
-  { name: "Deadlifts", sets: 5, repititions: 5, rest: "10" },
-  { name: "Military Press", sets: 5, repititions: 5, rest: "10" },
-  { name: "Squats", sets: 5, repititions: 5, rest: "10" }
+  { name: "Deadlifts", sets: 5, repititions: 5, rest: "10", day: 1 },
+  { name: "Military Press", sets: 5, repititions: 5, rest: "10", day: 1 },
+  { name: "Squats", sets: 5, repititions: 5, rest: "10", day: 1 }
 ];
 
 export const reviews: Review[] = [
@@ -63,6 +63,7 @@ export const reviews: Review[] = [
 export const workout: Workout = {
   name: "Example Workout Sample",
   user: testUser,
+  days: 3,
   difficulty: 3,
   tags: ["test1", "test2", "test3"],
   created: "2019-12-31T21:42:47.912Z",

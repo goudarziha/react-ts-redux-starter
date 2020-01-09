@@ -15,6 +15,7 @@ stories.add("default", () => {
   const workout: Workout = {
     name: "Example Workout Sample",
     user: testUser,
+    days: 3,
     difficulty: 3,
     tags: ["test1", "test2", "test3"],
     created: "2019-12-31T21:42:47.912Z",
@@ -32,6 +33,7 @@ stories.add("list", () => {
     name: "Example Workout Sample",
     user: testUser,
     difficulty: 3,
+    days: 3,
     tags: ["test1", "test2", "test3"],
     created: "2019-12-31T21:42:47.912Z",
     exercises: sampleExercises,
@@ -43,6 +45,7 @@ stories.add("list", () => {
   const workout2: Workout = {
     name: "Example Workout Sample",
     user: testUser,
+    days: 3,
     difficulty: 3,
     tags: ["test1", "test2", "test3"],
     created: "2019-12-31T21:42:47.912Z",

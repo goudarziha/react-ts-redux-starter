@@ -6,6 +6,7 @@ import { ActionStatus } from "./utils/types";
 import { beginAsyncRequest, handleAsyncResponse } from "./utils/asyncActions";
 import { User } from "./userDuck";
 import { State } from ".";
+import { act } from "react-dom/test-utils";
 
 export interface Comment {
   created: string;
@@ -119,15 +120,15 @@ export const initialState = {
     [Action.GET_BY_ID]: ActionStatus.IDLE,
     [Action.CREATE]: ActionStatus.IDLE
   },
-  self: {},
-  users: {}
+  self: [],
+  users: []
 };
 
 export const reducer = (state = initialState, action: AnyAction): any => {
   switch (action.type) {
     case Action.GET:
       return produce(state, draftState => {
-        if (action.status[action.GET] === ActionStatus.SUCCESS) {
+        if (action.status[Action.GET] === ActionStatus.SUCCESS) {
           _.set(draftState, ["users"], action.payload);
         }
       });
@@ -135,6 +136,13 @@ export const reducer = (state = initialState, action: AnyAction): any => {
     case Action.GET_BY_USER:
     case Action.UPDATE:
     case Action.CREATE:
+      console.log(action);
+      return produce(state, draftState => {
+        console.log(_.get(action.status, [Action.CREATE]));
+        if (action.status[Action.CREATE] === ActionStatus.SUCCESS) {
+          _.set(draftState, ["self"], action.payload.workout);
+        }
+      });
     case Action.DELETE:
     case Action.ADD_REVIEW:
     case Action.CREATE_REMIX:

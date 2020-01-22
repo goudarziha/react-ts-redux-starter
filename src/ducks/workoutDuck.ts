@@ -103,12 +103,12 @@ export const create = (workout: Workout) => (
 
   const access_token = getState().auth.access_token;
   beginAsyncRequest(dispatch, actionType, {});
-  const url = `${BASE_URL}/workout/create`;
+  const url = `${BASE_URL}/workout`;
   const request = {
     path: url,
     method: HttpMethod.POST,
     token: access_token,
-    data: { workout }
+    data: workout
   };
   handleAsyncResponse(dispatch, actionType, request, {});
 };

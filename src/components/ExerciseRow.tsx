@@ -43,20 +43,18 @@ const ExerciseRow = ({ workout, style }: ExerciseRowProps) => {
                 return <Badge text={val} />;
               })}
             </div>
-            <small>
-              Updated {created} by {user.username}
-            </small>
+            <small>{/* Updated {created} by {user.username} */}</small>
             <div className="d-flex flex-row">
-              <small>{reviews.length} Reviews</small>
+              {/* <small>{reviews.length} Reviews</small> */}
               <small>
-                {comments.length}
+                {/* {comments.length} */}
                 <i className="fa fa-comment ml-1" aria-hidden="true"></i>
               </small>
               <small>
                 {liked} <i className="fa fa-heart" aria-hidden="true"></i>
               </small>
               <small>
-                {exercises.length}
+                {/* {exercises.length} */}
                 Exercises
               </small>
             </div>

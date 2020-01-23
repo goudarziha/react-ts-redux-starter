@@ -49,6 +49,7 @@ export const NAMESPACE = "workouts";
 export const BASE_URL = "http://localhost:5000/api";
 
 export const GET = "GET";
+export const GET_ALL = "GET_ALL";
 export const GET_BY_ID = "GET_BY_ID";
 export const GET_BY_USER = "GET_BY_USER";
 export const CREATE = "CREATE";
@@ -59,6 +60,7 @@ export const CREATE_REMIX = "CREATE_REMIX";
 
 export const Action = {
   GET: `${NAMESPACE}/${GET}`,
+  GET_ALL: `${NAMESPACE}/${GET_ALL}`,
   GET_BY_ID: `${NAMESPACE}/${GET_BY_ID}`,
   GET_BY_USER: `${NAMESPACE}/${GET_BY_USER}`,
   CREATE: `${NAMESPACE}/${CREATE}`,
@@ -77,6 +79,20 @@ export const getAll = () => (dispatch: Dispatch<any>) => {
 
   beginAsyncRequest(dispatch, actionType, {});
   const url = BASE_URL + "/user/";
+  const request = {
+    path: url,
+    method: HttpMethod.GET
+  };
+  handleAsyncResponse(dispatch, actionType, request, {});
+};
+
+export const fetchWorkouts = () => (
+  dispatch: Dispatch<any>,
+  getState: () => State
+) => {
+  const actionType = Action.GET_ALL;
+  beginAsyncRequest(dispatch, actionType, {});
+  const url = BASE_URL + "/workout";
   const request = {
     path: url,
     method: HttpMethod.GET
@@ -132,11 +148,16 @@ export const reducer = (state = initialState, action: AnyAction): any => {
           _.set(draftState, ["users"], action.payload);
         }
       });
+    case Action.GET_ALL:
+      return produce(state, draftState => {
+        if (action.status[Action.GET_ALL] === ActionStatus.SUCCESS) {
+          _.set(draftState, ["users"], action.payload.workouts);
+        }
+      });
     case Action.GET_BY_ID:
     case Action.GET_BY_USER:
     case Action.UPDATE:
     case Action.CREATE:
-      console.log(action);
       return produce(state, draftState => {
         console.log(_.get(action.status, [Action.CREATE]));
         if (action.status[Action.CREATE] === ActionStatus.SUCCESS) {

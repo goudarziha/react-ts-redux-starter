@@ -3,4 +3,5 @@ import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import Profile from "./Profile";
 import Workout from "./Workout";
-export { Main, Dashboard, Settings, Profile, Workout };
+import Detail from "./Detail";
+export { Main, Dashboard, Settings, Profile, Workout, Detail };

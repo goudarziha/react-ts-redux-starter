@@ -8,7 +8,14 @@ import {
   ChangePasswordReset,
   ConfirmEmail
 } from "./auth";
-import { Main, Dashboard, Settings, Profile, Workout } from "./containers";
+import {
+  Main,
+  Dashboard,
+  Settings,
+  Profile,
+  Workout,
+  Detail
+} from "./containers";
 import { Header, Footer, PrivateRoute } from "./components";
 import { useSelector, useDispatch } from "react-redux";
 import $ from "jquery";
@@ -16,6 +23,7 @@ import "bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import { checkToken } from "./ducks/authDuck";
+import { fetchWorkouts } from "./ducks/workoutDuck";
 //@ts-ignore
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
@@ -55,6 +63,12 @@ const App: React.FC = () => {
     }
   });
 
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchWorkouts());
+    }
+  });
+
   return (
     <div className="App" data-testid="app-test">
       <ReactNotification />
@@ -71,6 +85,7 @@ const App: React.FC = () => {
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
           <PrivateRoute exact path="/workout" component={Workout} />
+          <PrivateRoute exact path="/detail/:id" component={Detail} />
         </Switch>
       </Router>
       <Footer />

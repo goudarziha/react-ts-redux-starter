@@ -3,7 +3,14 @@ import _ from "lodash";
 import useFrom from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Difficulty } from "../../utils/types";
+import Select from "react-select";
 import { Workout, Exercise, create } from "../../ducks/workoutDuck";
+
+const options = [
+  { value: "chocolate", label: "Chocolate" },
+  { value: "strawberry", label: "Strawberry" },
+  { value: "vanilla", label: "Vanilla" }
+];
 
 const WorkoutForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -29,6 +36,16 @@ const WorkoutForm: React.FC = () => {
           type="text"
           name="name"
           ref={register({ required: "required" })}
+          className="form-control"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="tags">Tags</label>
+        <input
+          type="text"
+          name="tags"
+          ref={register({})}
           className="form-control"
         />
       </div>

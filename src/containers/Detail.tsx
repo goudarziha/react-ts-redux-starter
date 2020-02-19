@@ -17,7 +17,7 @@ const Detail = () => {
   return (
     <div className="container">
       <h1>{workout.name}</h1>
-      <Link to="/">
+      <Link to={`/user/${workout.user.username}`}>
         <span>by: {workout.user.username}</span>
       </Link>
       <span>yes</span>

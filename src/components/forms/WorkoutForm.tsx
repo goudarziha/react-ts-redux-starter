@@ -4,19 +4,22 @@ import useFrom from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Difficulty } from "../../utils/types";
 import Select from "react-select";
+import { RHFInput } from "react-hook-form-input";
 import { Workout, Exercise, create } from "../../ducks/workoutDuck";
 
 const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
+  { value: "weight_gain", label: "Weight Gain" },
+  { value: "weight_loss", label: "Weight Loss" },
+  { value: "tone", label: "Tone" },
+  { value: "endurance", label: "Endurance" },
+  { value: "calisthetics", label: "Calistethics" }
 ];
 
 const WorkoutForm: React.FC = () => {
   const dispatch = useDispatch();
   const [exercises, setExercises] = React.useState<number>(1);
   const [day, setDay] = React.useState<number>(1);
-  const { handleSubmit, register } = useFrom();
+  const { handleSubmit, register, setValue } = useFrom();
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -40,15 +43,12 @@ const WorkoutForm: React.FC = () => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="tags">Tags</label>
-        <input
-          type="text"
-          name="tags"
-          ref={register({})}
-          className="form-control"
-        />
-      </div>
+      <RHFInput
+        as={<Select options={options} />}
+        rules={{ required: true }}
+        name="tags"
+        register={register}
+      />
 
       <div className="form-group">
         <label htmlFor="description">Description</label>

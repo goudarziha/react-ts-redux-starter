@@ -14,7 +14,8 @@ import {
   Settings,
   Profile,
   Workout,
-  Detail
+  Detail,
+  User
 } from "./containers";
 import { Header, Footer, PrivateRoute } from "./components";
 import { useSelector, useDispatch } from "react-redux";
@@ -81,6 +82,7 @@ const App: React.FC = () => {
           <Route exact path="/reset" component={ResetPassword} />
           <Route exact path="/change/:token" component={ChangePasswordReset} />
           <Route exact path="/confirm/:token" component={ConfirmEmail} />
+          <Route exact path="/user/:username" component={User} />
           <PrivateRoute exact path="/settings" component={Settings} />
           <PrivateRoute exact path="/profile" component={Profile} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />

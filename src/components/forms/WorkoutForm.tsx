@@ -27,7 +27,7 @@ const WorkoutForm: React.FC = () => {
   };
 
   const createArrayWithNumbers = (length: number) => {
-    return Array.from({ length }, (_, k) => k + 1);
+    return Array.from({ length }, (_, k) => k);
   };
 
   return (

@@ -23,6 +23,7 @@ const ExerciseRow = ({ workout, style }: ExerciseRowProps) => {
     exercises,
     liked
   } = workout;
+  console.log(tags);
   return (
     <div className="w-75 mb-3" data-testid="exercise-row">
       <div
@@ -39,8 +40,8 @@ const ExerciseRow = ({ workout, style }: ExerciseRowProps) => {
           <div className="d-flex flex-column">
             <div className="d-flex flex-row">
               <h5>{name}</h5>
-              {_.map(tags, (val, i) => {
-                return <Badge text={val} />;
+              {_.map(tags, tag => {
+                return <Badge text={_.get(tag, ["name"])} />;
               })}
             </div>
             <small>{/* Updated {created} by {user.username} */}</small>

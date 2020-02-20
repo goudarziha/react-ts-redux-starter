@@ -38,6 +38,9 @@ const Detail = () => {
         <TabPanel>
           <h3>yes</h3>
         </TabPanel>
+        <TabPanel>
+          <h3>YES</h3>
+        </TabPanel>
       </Tabs>
     </div>
   );

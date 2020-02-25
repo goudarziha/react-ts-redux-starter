@@ -31,6 +31,11 @@ const Detail = () => {
 
         <TabPanel>
           <h2>{workout.description}</h2>
+
+          {!_.isEmpty(workout.exercises) &&
+            _.map(workout.exercises, exercise => {
+              return <div>{exercise.name}</div>;
+            })}
         </TabPanel>
         <TabPanel>
           <h2>yes</h2>

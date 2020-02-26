@@ -13,6 +13,7 @@ import ExerciseButton from "./ExerciseButton";
 import Badge from "./Badge";
 import ExerciseRow from "./ExerciseRow";
 import WorkoutForm from "./forms/WorkoutForm";
+import { WorkoutDisplay } from "./WorkoutDisplay";
 
 export {
   Header,
@@ -29,5 +30,6 @@ export {
   ExerciseButton,
   Badge,
   ExerciseRow,
-  WorkoutForm
+  WorkoutForm,
+  WorkoutDisplay
 };

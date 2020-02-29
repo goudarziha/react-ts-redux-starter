@@ -25,6 +25,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import { checkToken } from "./ducks/authDuck";
 import { fetchWorkouts } from "./ducks/workoutDuck";
+import { getAll } from "./ducks/userDuck";
 //@ts-ignore
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
@@ -37,6 +38,8 @@ const App: React.FC = () => {
   const isAuthenticated = useSelector(state =>
     _.get(state, ["auth", "isAuthenticated"])
   );
+
+  dispatch(getAll());
 
   const message = useSelector(state => _.get(state, ["message", "message"]));
   const type = useSelector(state =>

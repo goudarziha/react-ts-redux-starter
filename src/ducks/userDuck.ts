@@ -40,7 +40,7 @@ export const getAll = () => (dispatch: Dispatch<any>) => {
   const actionType = Action.GET;
 
   beginAsyncRequest(dispatch, actionType, {});
-  const url = BASE_URL + "/user/";
+  const url = BASE_URL + "/users";
   const request = {
     path: url,
     method: HttpMethod.GET
@@ -73,8 +73,8 @@ export const reducer = (state = initialState, action: AnyAction): any => {
   switch (action.type) {
     case Action.GET:
       return produce(state, draftState => {
-        if (action.status[action.GET] === ActionStatus.SUCCESS) {
-          _.set(draftState, ["users"], action.payload);
+        if (action.status[Action.GET] === ActionStatus.SUCCESS) {
+          _.set(draftState, ["users"], action.payload.users);
         }
       });
     case Action.GET_BY_ID:

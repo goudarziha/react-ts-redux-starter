@@ -6,11 +6,10 @@ import { jsx, css } from "@emotion/core";
 import Moment from "react-moment";
 
 interface ProfileCardProps {
-  avatar: string;
+  avatar?: string;
   bio: string;
   username: string;
   created: string;
-  email: string;
 }
 
 const ProfileCardProps = ({
@@ -18,7 +17,6 @@ const ProfileCardProps = ({
   bio,
   username,
   created,
-  email,
   ...props
 }: ProfileCardProps) => {
   return (
@@ -30,11 +28,13 @@ const ProfileCardProps = ({
             0 3px 6px rgba(0, 0, 0, 0.23);
         `}
       >
-        <Avatar
-          name={username}
-          size={128}
-          style={{ top: "-30px", position: "relative", zIndex: 99 }}
-        />
+        {!avatar && (
+          <Avatar
+            name={username}
+            size={128}
+            style={{ top: "-30px", position: "relative", zIndex: 99 }}
+          />
+        )}
         <div className="d-flex flex-column card-body align-items-center">
           <h5 className="card-text">{username}</h5>
           <p className="card-text">{bio}</p>

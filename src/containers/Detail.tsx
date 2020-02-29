@@ -39,6 +39,14 @@ const Detail = () => {
         </TabPanel>
         <TabPanel>
           <h2>yes</h2>
+          <form>
+            <div className="form-group">
+              <textarea name="review" className="form-control"></textarea>
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </form>
         </TabPanel>
         <TabPanel>
           <h3>yes</h3>

@@ -9,6 +9,11 @@ const Main = () => {
 
   return (
     <div>
+      <div className="jumbotron">
+        <div className="container-fluid">
+          <h1>hello</h1>
+        </div>
+      </div>
       <h1>Workouts</h1>
       {_.map(workouts, (workout, index) => {
         return (

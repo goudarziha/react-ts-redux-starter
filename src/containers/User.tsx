@@ -2,14 +2,26 @@ import * as React from "react";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { ProfileCard } from "../components";
 
 const User = () => {
-  const { user } = useParams();
-  //   const userData = useSelector(state => _.get())
+  const { username } = useParams();
+  const user = useSelector(state =>
+    _.find(_.get(state, ["user", "users"]), { username: username })
+  );
+
   return (
     <div>
       <h1>USER!</h1>
-      hello {user}
+      {user && (
+        <ProfileCard
+          avatar={user.avatar}
+          bio={user.bio}
+          username={user.username}
+          created={user.created}
+        />
+      )}
+      hello {username}
     </div>
   );
 };
